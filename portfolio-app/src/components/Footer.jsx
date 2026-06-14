@@ -3,12 +3,11 @@ const Footer = ({ name }) => {
     <footer style={{
       textAlign: 'center',
       padding: '2rem',
-      borderTop: '1px solid #e5e7eb',
-      marginTop: '4rem',
-      color: '#6b7280'
+      backgroundColor: '#1a2a4f',
+      color: '#d0ceca'
     }}>
       <div className="container">
-        <p>© 2026 {name} · Designed with focus on aesthetics & UX</p>
+        <p>© 2026 {name} · Software Engineering with Multimedia</p>
       </div>
     </footer>
   );

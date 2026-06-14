@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
   background: #ffffff;
@@ -21,29 +25,33 @@ body {
 }
 
 section {
-  padding: 5rem 0;
+  scroll-margin-top: 80px;
 }
 
 @media (max-width: 768px) {
-  section {
-    padding: 3rem 0;
-  }
   .container {
     padding: 0 1.5rem;
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #3b82f6;
+  background: #667eea;
   border-radius: 4px;
+}
+
+.btn-primary {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }

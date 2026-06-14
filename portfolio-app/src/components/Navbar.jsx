@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -11,14 +13,20 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const getLinkColor = () => {
+    if (location.pathname !== '/') {
+      return '#1a2a4f';
+    }
+    return scrolled ? 'white' : '#1a2a4f';
+  };
+
   return (
     <nav style={{
       position: 'fixed',
       top: 0,
       width: '100%',
-      backgroundColor: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(10px)' : 'none',
-      boxShadow: scrolled ? '0 1px 3px rgba(0,0,0,0.05)' : 'none',
+      backgroundColor: location.pathname !== '/' ? 'white' : (scrolled ? '#1a2a4f' : 'transparent'),
+      boxShadow: (location.pathname !== '/' || scrolled) ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
       zIndex: 1000,
       transition: 'all 0.3s ease'
     }}>
@@ -28,47 +36,51 @@ const Navbar = () => {
         alignItems: 'center',
         padding: '1rem 0'
       }}>
-        <div style={{
+        <Link to="/" style={{
           fontSize: '1.5rem',
           fontWeight: 'bold',
-          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-          WebkitBackgroundClip: 'text',
-          backgroundClip: 'text',
-          color: 'transparent'
+          color: getLinkColor(),
+          textDecoration: 'none'
         }}>
-          SC.design
-        </div>
+          Portfolio
+        </Link>
 
         <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: '2rem' }}>
-            {['Work', 'About', 'Contact'].map(item => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                style={{
-                  textDecoration: 'none',
-                  color: '#4b5563',
-                  fontWeight: 500,
-                  transition: 'color 0.2s'
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#3b82f6'}
-                onMouseLeave={(e) => e.target.style.color = '#4b5563'}
-              >
-                {item}
-              </a>
-            ))}
-          </div>
-          <a href="#contact" style={{
-            background: '#111827',
-            color: 'white',
-            padding: '0.5rem 1.25rem',
-            borderRadius: '2rem',
+          <Link to="/" style={{
             textDecoration: 'none',
-            fontWeight: 600,
-            fontSize: '0.9rem'
+            color: getLinkColor(),
+            fontWeight: 500
           }}>
-            Hire me
-          </a>
+            Home
+          </Link>
+          <Link to="/skills" style={{
+            textDecoration: 'none',
+            color: getLinkColor(),
+            fontWeight: 500
+          }}>
+            Skills
+          </Link>
+          <Link to="/projects" style={{
+            textDecoration: 'none',
+            color: getLinkColor(),
+            fontWeight: 500
+          }}>
+            Projects
+          </Link>
+          <Link to="/about" style={{
+            textDecoration: 'none',
+            color: getLinkColor(),
+            fontWeight: 500
+          }}>
+            About
+          </Link>
+          <Link to="/contact" style={{
+            textDecoration: 'none',
+            color: getLinkColor(),
+            fontWeight: 500
+          }}>
+            Contact
+          </Link>
         </div>
       </div>
     </nav>
