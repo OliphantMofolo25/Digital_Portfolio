@@ -24,6 +24,9 @@ import modelling5Img from '../assets/digitals/modelling5.jpg';
 import modelling6Img from '../assets/digitals/modelling6.jpg';
 import modelling7Img from '../assets/digitals/modelling7.jpg';
 
+// Import static particles data (pre-generated, no Math.random at runtime)
+import { particles } from '../data/particlesData';
+
 const HomePage = ({ name, role, studentInfo }) => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(null);
@@ -61,7 +64,7 @@ const HomePage = ({ name, role, studentInfo }) => {
       );
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [modellingImages.length]);
 
   const nextModellingImage = () => {
     setCurrentModellingIndex((prevIndex) =>
@@ -137,16 +140,6 @@ const HomePage = ({ name, role, studentInfo }) => {
     document.body.style.overflow = 'auto';
   };
 
-  // Generate dispersion particles
-  const particles = Array.from({ length: 60 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 4 + 2,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    delay: Math.random() * 5,
-    duration: Math.random() * 10 + 5
-  }));
-
   return (
     <div>
       {/* Hero Section with Dispersion/Particle Background */}
@@ -168,36 +161,6 @@ const HomePage = ({ name, role, studentInfo }) => {
             0%, 100% { top: 6px; opacity: 1; }
             50% { top: 20px; opacity: 0.3; }
           }
-          @keyframes slideUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-          @keyframes fadeOut {
-            from {
-              opacity: 1;
-              transform: scale(1);
-            }
-            to {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-          }
         `}</style>
 
         {/* Animated Particle Background */}
@@ -216,7 +179,7 @@ const HomePage = ({ name, role, studentInfo }) => {
                 position: 'absolute',
                 width: `${particle.size}px`,
                 height: `${particle.size}px`,
-                backgroundColor: `rgba(139, 0, 0, ${Math.random() * 0.5 + 0.2})`,
+                backgroundColor: `rgba(139, 0, 0, ${particle.opacity})`,
                 borderRadius: '50%',
                 left: `${particle.left}%`,
                 top: `${particle.top}%`,
