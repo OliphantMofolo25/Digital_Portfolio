@@ -4,99 +4,139 @@ export const portfolioData = {
   tagline: "Passionate about creating meaningful digital experiences",
   email: "oliphantmolefem@gmail.com",
   
-  // Personal Info
   studentInfo: {
     program: "BSC in Software Engineering with Multimedia",
     university: "Limkokwing University of Creative Technology Lesotho",
     year: "3rd Year",
-    bio: "I'm a passionate Software Engineering student specializing in Multimedia. I love bridging the gap between technical functionality and beautiful design. Currently exploring how to create inclusive, accessible digital experiences that make a difference.",
-    interests: ["Web Design", "UI/UX", "Cloud Computing", "Database Systems", "Multimedia", "Programming"]
+    bio: "I'm a passionate Software Engineering student specializing in Multimedia. I love bridging the gap between technical functionality and beautiful design.",
+    interests: ["Web Design", "UI/UX", "Cloud Computing", "Database Systems", "Multimedia", "Programming", "AI/ML"]
   },
   
-  // Skills combined into logical groups (no duplicates or overlaps)
   skills: [
-    { name: "Web Design & Development", icon: "WEB", description: "HTML, CSS, JavaScript, React, Responsive design, Computer Graphics" },
-    { name: "UI/UX & Human Computer Interaction", icon: "HCI", description: "Figma, Prototyping, User testing, Usability, Accessibility" },
-    { name: "Programming & JavaFX", icon: "OOP", description: "Java, Object Oriented Programming, JavaFX, GUI development" },
-    { name: "Cloud Computing", icon: "CC", description: "AWS, Azure fundamentals, Cloud architecture" },
-    { name: "Data Communication & Networking", icon: "NET", description: "Network protocols, TCP/IP, Data communication" },
-    { name: "Database Systems", icon: "DB", description: "SQL, MongoDB, Firebase, Database design" },
-    { name: "System Analysis & Design", icon: "SA", description: "Requirements engineering, UML modeling, System design" },
-    { name: "Multimedia & Digital Design", icon: "MM", description: "Graphics, Video, Animation, 3D Modelling, Digital Imaging" },
-    { name: "Computer Applications", icon: "CA", description: "Microsoft Office, Digital Imaging, Graphics" }
+    { name: "Web Design & Development", icon: "WEB", description: "HTML, CSS, JavaScript, React, Responsive design" },
+    { name: "UI/UX & Human Computer Interaction", icon: "HCI", description: "Figma, Prototyping, User testing, Accessibility" },
+    { name: "Programming & JavaFX", icon: "OOP", description: "Java, Object Oriented Programming, JavaFX" },
+    { name: "Cloud Computing", icon: "CC", description: "AWS, Azure, Firebase" },
+    { name: "Data Communication & Networking", icon: "NET", description: "Network protocols, TCP/IP" },
+    { name: "Database Systems", icon: "DB", description: "SQL, MongoDB, Firebase" },
+    { name: "AI & Machine Learning", icon: "AI", description: "LLMs, Supervised Models, Data Cleaning" },
+    { name: "Mobile Development", icon: "MB", description: "React Native, Expo Go" },
+    { name: "System Analysis & Design", icon: "SA", description: "Requirements, UML, System design" },
+    { name: "Multimedia & Digital Design", icon: "MM", description: "3D Modelling, Graphics, Video" },
+    { name: "Computer Applications", icon: "CA", description: "Microsoft Office, Digital Imaging" }
   ],
   
-  // Projects with actual GitHub links
   projects: [
     {
       id: 1,
-      title: "ML Pipeline",
-      category: "Machine Learning",
-      description: "Machine learning pipeline for data processing and model training automation.",
-      image: "ML",
-      tags: ["Python", "Machine Learning", "Data Pipeline"],
-      githubLink: "https://github.com/OliphantMofolo25/ML_pipeline.git",
-      liveLink: "#"
+      title: "University Portal",
+      category: "Mobile Development",
+      description: "A comprehensive university portal mobile app built with Expo Go and Firebase. Features include student registration, course enrollment, grade tracking, and real-time notifications.",
+      image: "UP",
+      tags: ["React Native", "Expo Go", "Firebase", "Mobile"],
+      githubLink: "https://github.com/OliphantMofolo25/University-Portal.git",
+      liveLink: "#",
+      hasSlideshow: true,
+      imageCount: 11,
+      imagePrefix: "university_portal/img_"
     },
     {
       id: 2,
-      title: "University Portal",
-      category: "Web Development",
-      description: "Comprehensive university portal for student management, course registration, and academic resources.",
-      image: "UP",
-      tags: ["PHP", "MySQL", "Bootstrap"],
-      githubLink: "https://github.com/OliphantMofolo25/University-Portal.git",
-      liveLink: "#"
+      title: "Hospital Booking System",
+      category: "UI/UX Design",
+      description: "Figma prototype for a hospital booking system enabling patients to schedule appointments, view doctor availability, and receive reminders.",
+      image: "HBS",
+      tags: ["Figma", "Prototyping", "UI/UX", "Healthcare"],
+      githubLink: "#",
+      liveLink: "#",
+      hasSlideshow: true,
+      imageCount: 10,
+      imagePrefix: "figma_prototype/image_"
     },
     {
       id: 3,
+      title: "AI Health Assistant",
+      category: "Machine Learning",
+      description: "AI-powered system for diagnosing High Blood Pressure, Type 2 Diabetes, and Depression. Uses LLMs and supervised learning models with data cleaning to provide accurate condition assessment and medication recommendations.",
+      image: "AI",
+      tags: ["Python", "LLMs", "Machine Learning", "Healthcare AI"],
+      githubLink: "https://github.com/OliphantMofolo25/ML_pipeline.git",
+      liveLink: "#",
+      hasSlideshow: true,
+      imageCount: 3,
+      imagePrefix: "machinelearning/pic_"
+    },
+    {
+      id: 4,
+      title: "MFS System",
+      category: "Financial System",
+      description: "Mobile Financial Services system for transactions, payments, and account management. Features include user authentication, money transfers, bill payments, and transaction history.",
+      image: "MFS",
+      tags: ["Fintech", "React", "Node.js", "MongoDB"],
+      githubLink: "https://github.com/OliphantMofolo25/mfs-_system.git",
+      liveLink: "https://mfs-system.vercel.app/",
+      hasSlideshow: true,
+      imageCount: 8,
+      imagePrefix: "mfsystem/img"
+    },
+    {
+      id: 5,
+      title: "Prospectus Mobile App",
+      category: "Mobile Development",
+      description: "Interactive prospectus mobile application showcasing university programs, courses, and admission requirements with an intuitive user interface.",
+      image: "PMA",
+      tags: ["React Native", "Mobile App", "Education"],
+      githubLink: "#",
+      liveLink: "#",
+      hasSlideshow: true,
+      imageCount: 7,
+      imagePrefix: "prospectus/picture_"
+    },
+    {
+      id: 6,
       title: "Limkokwing Application",
       category: "Web Application",
       description: "University application system for admissions, document submission, and application tracking.",
       image: "LA",
       tags: ["Web Dev", "Database", "Form Management"],
       githubLink: "https://github.com/OliphantMofolo25/Limkokwing_application.git",
-      liveLink: "#"
+      liveLink: "#",
+      hasSlideshow: false
     },
     {
-      id: 4,
+      id: 7,
       title: "PinkDrive",
-      category: "Web Platform",
-      description: "Healthcare awareness platform focused on breast cancer education and screening.",
+      category: "E-commerce / Automotive",
+      description: "A modern car sales platform focused on buying and selling vehicles. Features include car listings, search and filter functionality, detailed vehicle specifications, and seller contact system.",
       image: "PD",
-      tags: ["Healthcare", "Web Development", "Awareness"],
+      tags: ["React", "E-commerce", "Automotive", "Car Sales"],
       githubLink: "https://github.com/OliphantMofolo25/PinkDrvie.git",
-      liveLink: "#"
+      liveLink: "http://idyllic-raindrop-4c7465.netlify.app/",
+      hasSlideshow: true,
+      imageCount: 6,
+      imagePrefix: "pinkdrive/pink_"
     },
     {
-      id: 5,
-      title: "MFS System",
-      category: "Financial System",
-      description: "Mobile financial services system for transactions, payments, and account management.",
-      image: "MFS",
-      tags: ["Fintech", "Mobile", "Transactions"],
-      githubLink: "https://github.com/OliphantMofolo25/mfs-_system.git",
-      liveLink: "#"
-    },
-    {
-      id: 6,
+      id: 8,
       title: "Maluti Airline",
       category: "Booking System",
       description: "Airline booking system for flight reservations, seat selection, and ticket management.",
       image: "MA",
       tags: ["Booking System", "Travel", "Database"],
       githubLink: "https://github.com/OliphantMofolo25/Maluti_Airline.git",
-      liveLink: "#"
+      liveLink: "#",
+      hasSlideshow: false
     },
     {
-      id: 7,
+      id: 9,
       title: "Loaning App",
       category: "Financial Application",
       description: "Loan management application for applications, approvals, and repayment tracking.",
       image: "LN",
       tags: ["Finance", "Loan Management", "Web App"],
       githubLink: "https://github.com/OliphantMofolo25/Loaning_app.git",
-      liveLink: "#"
+      liveLink: "https://loaning-app-ebon.vercel.app/",
+      hasSlideshow: false
     }
   ],
   

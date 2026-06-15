@@ -14,12 +14,14 @@ import modelingImg from '../assets/skills/modeling.png';
 import multimediaImg from '../assets/skills/multimedia.jpg';
 import networkingImg from '../assets/skills/networking.jpg';
 import userinterfaceImg from '../assets/skills/userinterface.jpg';
+import machinelearningImg from '../assets/skills/machinelearning.jpg';
+import mobileappImg from '../assets/skills/mobileapp.jpg';
 
 const SkillsPage = ({ skills }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState({});
   const intervalRefs = useRef({});
 
-  // Define which images belong to each skill category (using imported images)
+ 
   const skillImages = {
     "Web Design & Development": [computerImg, graphicsImg],
     "UI/UX & Human Computer Interaction": [userinterfaceImg],
@@ -29,7 +31,9 @@ const SkillsPage = ({ skills }) => {
     "Database Systems": [databaseImg],
     "System Analysis & Design": [analysisImg],
     "Multimedia & Digital Design": [multimediaImg, modelingImg],
-    "Computer Applications": [applicationsImg]
+    "Computer Applications": [applicationsImg],
+    "AI & Machine Learning": [machinelearningImg],
+    "Mobile Development": [mobileappImg]
   };
 
   // Check if skill has multiple images
