@@ -24,7 +24,7 @@ import modelling5Img from '../assets/digitals/modelling5.jpg';
 import modelling6Img from '../assets/digitals/modelling6.jpg';
 import modelling7Img from '../assets/digitals/modelling7.jpg';
 
-// Import static particles data (pre-generated, no Math.random at runtime)
+// Import static particles data
 import { particles } from '../data/particlesData';
 
 const HomePage = ({ name, role, studentInfo }) => {
@@ -34,6 +34,17 @@ const HomePage = ({ name, role, studentInfo }) => {
   const [currentModellingIndex, setCurrentModellingIndex] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isImageVisible, setIsImageVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile on mount and window resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // 3D Modelling images array for slideshow
   const modellingImages = [
@@ -47,14 +58,15 @@ const HomePage = ({ name, role, studentInfo }) => {
     { src: modelling7Img, title: "Classroom Modelling - View 7" }
   ];
 
-  // Track mouse movement for dispersion effect
+  // Track mouse movement for dispersion effect (only on desktop)
   useEffect(() => {
+    if (isMobile) return;
     const handleMouseMove = (e) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isMobile]);
 
   // Auto-slideshow for 3D modelling
   useEffect(() => {
@@ -141,8 +153,8 @@ const HomePage = ({ name, role, studentInfo }) => {
   };
 
   return (
-    <div>
-      {/* Hero Section with Dispersion/Particle Background */}
+    <div style={{ overflowX: 'hidden', width: '100%' }}>
+      {/* Hero Section */}
       <section style={{
         minHeight: '100vh',
         display: 'flex',
@@ -150,7 +162,8 @@ const HomePage = ({ name, role, studentInfo }) => {
         justifyContent: 'center',
         position: 'relative',
         overflow: 'hidden',
-        backgroundColor: '#0a0a2a'
+        backgroundColor: '#0a0a2a',
+        padding: isMobile ? '6rem 0 3rem' : '0'
       }}>
         <style>{`
           @keyframes float {
@@ -161,65 +174,101 @@ const HomePage = ({ name, role, studentInfo }) => {
             0%, 100% { top: 6px; opacity: 1; }
             50% { top: 20px; opacity: 0.3; }
           }
+          @media (max-width: 768px) {
+            .hero-grid {
+              grid-template-columns: 1fr !important;
+              text-align: center;
+              gap: 2rem !important;
+            }
+            .profile-image-container {
+              max-width: 250px !important;
+              margin: 0 auto;
+            }
+            .nav-cards-grid {
+              grid-template-columns: repeat(2, 1fr) !important;
+              gap: 1rem !important;
+            }
+            .digital-works-grid {
+              grid-template-columns: 1fr !important;
+            }
+            .modelling-grid {
+              grid-template-columns: 1fr !important;
+              gap: 2rem !important;
+            }
+            .hero-text {
+              text-align: center;
+              padding: 0 1rem;
+            }
+            .hero-buttons {
+              justify-content: center;
+            }
+          }
         `}</style>
 
-        {/* Animated Particle Background */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0
-        }}>
-          {particles.map((particle) => (
-            <div
-              key={particle.id}
-              style={{
-                position: 'absolute',
-                width: `${particle.size}px`,
-                height: `${particle.size}px`,
-                backgroundColor: `rgba(139, 0, 0, ${particle.opacity})`,
-                borderRadius: '50%',
-                left: `${particle.left}%`,
-                top: `${particle.top}%`,
-                animation: `float ${particle.duration}s infinite ease-in-out`,
-                animationDelay: `${particle.delay}s`,
-                opacity: 0.6
-              }}
-            />
-          ))}
-        </div>
+        {/* Animated Particle Background - only on desktop */}
+        {!isMobile && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0
+          }}>
+            {particles.map((particle) => (
+              <div
+                key={particle.id}
+                style={{
+                  position: 'absolute',
+                  width: `${particle.size}px`,
+                  height: `${particle.size}px`,
+                  backgroundColor: `rgba(139, 0, 0, ${particle.opacity})`,
+                  borderRadius: '50%',
+                  left: `${particle.left}%`,
+                  top: `${particle.top}%`,
+                  animation: `float ${particle.duration}s infinite ease-in-out`,
+                  animationDelay: `${particle.delay}s`,
+                  opacity: 0.6
+                }}
+              />
+            ))}
+          </div>
+        )}
 
-        {/* Mouse-following glow effect */}
-        <div style={{
-          position: 'absolute',
-          width: '400px',
-          height: '400px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(139,0,0,0.25) 0%, transparent 70%)',
-          left: mousePosition.x - 200,
-          top: mousePosition.y - 200,
-          pointerEvents: 'none',
-          transition: 'transform 0.1s ease-out',
-          zIndex: 1
-        }} />
+        {/* Mouse-following glow effect - only on desktop */}
+        {!isMobile && (
+          <div style={{
+            position: 'absolute',
+            width: '400px',
+            height: '400px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(139,0,0,0.25) 0%, transparent 70%)',
+            left: mousePosition.x - 200,
+            top: mousePosition.y - 200,
+            pointerEvents: 'none',
+            transition: 'transform 0.1s ease-out',
+            zIndex: 1
+          }} />
+        )}
 
         <div className="container" style={{
           position: 'relative',
           zIndex: 2,
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '4rem',
-          alignItems: 'center'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: isMobile ? '2rem' : '4rem',
+          alignItems: 'center',
+          padding: isMobile ? '0 1.5rem' : '0'
         }}>
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: isMobile ? 0 : -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
+            className="hero-text"
+            style={{ textAlign: isMobile ? 'center' : 'left' }}
           >
             <div style={{
-              fontSize: '0.85rem',
+              fontSize: isMobile ? '0.7rem' : '0.85rem',
               fontWeight: 500,
               color: '#8b0000',
               letterSpacing: '4px',
@@ -230,7 +279,7 @@ const HomePage = ({ name, role, studentInfo }) => {
             </div>
             
             <h1 style={{
-              fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+              fontSize: isMobile ? 'clamp(1.8rem, 8vw, 3rem)' : 'clamp(2.5rem, 6vw, 4rem)',
               fontWeight: 800,
               color: 'white',
               marginBottom: '0.5rem',
@@ -240,38 +289,42 @@ const HomePage = ({ name, role, studentInfo }) => {
             </h1>
             
             <div style={{
-              fontSize: 'clamp(1.2rem, 3vw, 1.5rem)',
+              fontSize: isMobile ? 'clamp(1rem, 4vw, 1.3rem)' : 'clamp(1.2rem, 3vw, 1.5rem)',
               color: '#e8e6e3',
-              marginBottom: '1.2rem',
+              marginBottom: '1rem',
               fontWeight: 400
             }}>
               <span style={{ borderBottom: '2px solid #8b0000', paddingBottom: '0.2rem' }}>{role}</span>
             </div>
             
             <p style={{
-              fontSize: '1rem',
+              fontSize: isMobile ? '0.9rem' : '1rem',
               color: '#d0ceca',
-              lineHeight: 1.7,
-              marginBottom: '2rem',
-              maxWidth: '500px'
+              lineHeight: 1.6,
+              marginBottom: '1.5rem',
+              maxWidth: '500px',
+              marginLeft: isMobile ? 'auto' : '0',
+              marginRight: isMobile ? 'auto' : '0'
             }}>
               {studentInfo.bio}
             </p>
             
-            <div style={{
+            <div className="hero-buttons" style={{
               display: 'flex',
               gap: '1rem',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              justifyContent: isMobile ? 'center' : 'flex-start'
             }}>
               <Link to="/skills" style={{
                 backgroundColor: '#8b0000',
                 color: 'white',
-                padding: '0.8rem 2rem',
+                padding: isMobile ? '0.6rem 1.5rem' : '0.8rem 2rem',
                 borderRadius: '0.5rem',
                 textDecoration: 'none',
                 fontWeight: 600,
                 display: 'inline-block',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                fontSize: isMobile ? '0.85rem' : '1rem'
               }}
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = '#6b0000';
@@ -286,12 +339,13 @@ const HomePage = ({ name, role, studentInfo }) => {
               <Link to="/projects" style={{
                 border: '2px solid white',
                 color: 'white',
-                padding: '0.8rem 2rem',
+                padding: isMobile ? '0.6rem 1.5rem' : '0.8rem 2rem',
                 borderRadius: '0.5rem',
                 textDecoration: 'none',
                 fontWeight: 500,
                 display: 'inline-block',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                fontSize: isMobile ? '0.85rem' : '1rem'
               }}
               onMouseEnter={(e) => {
                 e.target.style.backgroundColor = 'rgba(255,255,255,0.1)';
@@ -306,27 +360,27 @@ const HomePage = ({ name, role, studentInfo }) => {
             </div>
           </motion.div>
 
-          {/* Hidden Profile Image Container - Reveals on Hover */}
+          {/* Profile Image Container */}
           <div
             style={{
               display: 'flex',
               justifyContent: 'center',
               position: 'relative'
             }}
-            onMouseEnter={() => setIsImageVisible(true)}
-            onMouseLeave={() => setIsImageVisible(false)}
+            onMouseEnter={() => !isMobile && setIsImageVisible(true)}
+            onMouseLeave={() => !isMobile && setIsImageVisible(false)}
           >
-            <div style={{
+            <div className="profile-image-container" style={{
               position: 'relative',
               width: '100%',
-              maxWidth: '380px',
-              opacity: isImageVisible ? 1 : 0,
-              transform: isImageVisible ? 'scale(1)' : 'scale(0.95)',
+              maxWidth: isMobile ? '250px' : '380px',
+              opacity: isMobile ? 1 : (isImageVisible ? 1 : 0),
+              transform: isMobile ? 'scale(1)' : (isImageVisible ? 'scale(1)' : 'scale(0.95)'),
               transition: 'opacity 0.5s ease-in-out, transform 0.5s ease-in-out',
-              pointerEvents: isImageVisible ? 'auto' : 'none'
+              pointerEvents: isMobile ? 'auto' : (isImageVisible ? 'auto' : 'none')
             }}>
-              {/* Hint text when image is hidden */}
-              {!isImageVisible && (
+              {/* Hint text - only on desktop */}
+              {!isMobile && !isImageVisible && (
                 <div style={{
                   position: 'absolute',
                   top: '50%',
@@ -343,31 +397,33 @@ const HomePage = ({ name, role, studentInfo }) => {
                 </div>
               )}
               
-              {/* Animated border frame */}
-              <div style={{
-                position: 'absolute',
-                top: '-15px',
-                left: '-15px',
-                right: '-15px',
-                bottom: '-15px',
-                border: '2px solid #8b0000',
-                opacity: isImageVisible ? 1 : 0,
-                transition: 'opacity 0.5s ease-in-out',
-                zIndex: 0
-              }} />
-              
-              {/* Second border layer */}
-              <div style={{
-                position: 'absolute',
-                top: '-8px',
-                left: '-8px',
-                right: '-8px',
-                bottom: '-8px',
-                border: '1px solid rgba(139,0,0,0.5)',
-                opacity: isImageVisible ? 1 : 0,
-                transition: 'opacity 0.5s ease-in-out 0.1s',
-                zIndex: 0
-              }} />
+              {/* Animated border frame - only on desktop */}
+              {!isMobile && (
+                <>
+                  <div style={{
+                    position: 'absolute',
+                    top: '-15px',
+                    left: '-15px',
+                    right: '-15px',
+                    bottom: '-15px',
+                    border: '2px solid #8b0000',
+                    opacity: isImageVisible ? 1 : 0,
+                    transition: 'opacity 0.5s ease-in-out',
+                    zIndex: 0
+                  }} />
+                  <div style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    left: '-8px',
+                    right: '-8px',
+                    bottom: '-8px',
+                    border: '1px solid rgba(139,0,0,0.5)',
+                    opacity: isImageVisible ? 1 : 0,
+                    transition: 'opacity 0.5s ease-in-out 0.1s',
+                    zIndex: 0
+                  }} />
+                </>
+              )}
               
               {/* Main Profile Image */}
               <div style={{
@@ -380,7 +436,8 @@ const HomePage = ({ name, role, studentInfo }) => {
                 overflow: 'hidden',
                 position: 'relative',
                 zIndex: 2,
-                aspectRatio: '1 / 1'
+                aspectRatio: '1 / 1',
+                borderRadius: isMobile ? '50%' : '0'
               }}>
                 <img 
                   src={profileImage} 
@@ -391,57 +448,51 @@ const HomePage = ({ name, role, studentInfo }) => {
                     objectFit: 'cover',
                     transition: 'transform 0.3s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    if (isImageVisible) {
-                      e.target.style.transform = 'scale(1.05)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'scale(1)';
-                  }}
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div style={{
-          position: 'absolute',
-          bottom: '30px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          zIndex: 2
-        }}>
-          <span style={{ color: 'white', fontSize: '0.7rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Scroll</span>
+        {/* Scroll indicator - only on desktop */}
+        {!isMobile && (
           <div style={{
-            width: '20px',
-            height: '35px',
-            border: '2px solid white',
-            borderRadius: '15px',
-            position: 'relative'
+            position: 'absolute',
+            bottom: '30px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
+            zIndex: 2
           }}>
+            <span style={{ color: 'white', fontSize: '0.7rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Scroll</span>
             <div style={{
-              width: '4px',
-              height: '8px',
-              backgroundColor: '#8b0000',
-              borderRadius: '2px',
-              position: 'absolute',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              top: '6px',
-              animation: 'bounce 2s infinite'
-            }} />
+              width: '20px',
+              height: '35px',
+              border: '2px solid white',
+              borderRadius: '15px',
+              position: 'relative'
+            }}>
+              <div style={{
+                width: '4px',
+                height: '8px',
+                backgroundColor: '#8b0000',
+                borderRadius: '2px',
+                position: 'absolute',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                top: '6px',
+                animation: 'bounce 2s infinite'
+              }} />
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Digital Showcase Section */}
-      <section style={{ backgroundColor: '#faf9f8', padding: '5rem 0' }}>
+      <section style={{ backgroundColor: '#faf9f8', padding: isMobile ? '3rem 0' : '5rem 0' }}>
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -450,7 +501,7 @@ const HomePage = ({ name, role, studentInfo }) => {
             viewport={{ once: true }}
           >
             <h2 style={{
-              fontSize: '2.5rem',
+              fontSize: isMobile ? '1.8rem' : '2.5rem',
               fontWeight: 700,
               textAlign: 'center',
               marginBottom: '1rem',
@@ -462,8 +513,10 @@ const HomePage = ({ name, role, studentInfo }) => {
               textAlign: 'center',
               color: '#4a4a4a',
               maxWidth: '700px',
-              margin: '0 auto 3rem',
-              lineHeight: 1.6
+              margin: '0 auto 2rem',
+              lineHeight: 1.6,
+              fontSize: isMobile ? '0.9rem' : '1rem',
+              padding: isMobile ? '0 1rem' : '0'
             }}>
               A collection of my digital design work demonstrating skills in Adobe Photoshop, 
               brand identity, editorial design, photography, and 3D modelling.
@@ -471,7 +524,7 @@ const HomePage = ({ name, role, studentInfo }) => {
 
             {/* Portrait Before/After Section */}
             <div style={{
-              marginBottom: '4rem',
+              marginBottom: '3rem',
               backgroundColor: 'white',
               borderRadius: '0.5rem',
               overflow: 'hidden',
@@ -479,18 +532,18 @@ const HomePage = ({ name, role, studentInfo }) => {
             }}>
               <div style={{
                 backgroundColor: '#1a2a4f',
-                padding: '1rem 2rem',
+                padding: '1rem',
                 color: 'white'
               }}>
-                <h3 style={{ fontSize: '1.3rem' }}>Before & After: Portrait to Illustration</h3>
-                <p style={{ color: '#d0ceca', marginTop: '0.25rem' }}>Original photography transformed into digital art</p>
+                <h3 style={{ fontSize: isMobile ? '1.1rem' : '1.3rem' }}>Before & After: Portrait to Illustration</h3>
+                <p style={{ color: '#d0ceca', marginTop: '0.25rem', fontSize: isMobile ? '0.8rem' : '0.9rem' }}>Original photography transformed into digital art</p>
               </div>
               
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                gap: '2rem',
-                padding: '2rem'
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+                gap: '1.5rem',
+                padding: '1.5rem'
               }}>
                 <div>
                   <h4 style={{ marginBottom: '0.5rem', color: '#8b0000' }}>Original Portrait</h4>
@@ -501,10 +554,10 @@ const HomePage = ({ name, role, studentInfo }) => {
                   >
                     <img src={portraitImg} alt="Original Portrait" style={{ width: '100%', height: '250px', objectFit: 'cover', display: 'block' }} />
                     <div className="overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.3s ease' }}>
-                      <button onClick={() => openLightbox(portraitImg, 'Original Portrait Photography')} style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.5rem 1.5rem', borderRadius: '2rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.4)'; e.target.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.transform = 'scale(1)'; }}>View Full Image</button>
+                      <button onClick={() => openLightbox(portraitImg, 'Original Portrait Photography')} style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.5rem 1.5rem', borderRadius: '2rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s' }}>View Full Image</button>
                     </div>
                   </div>
-                  <p style={{ marginTop: '0.5rem', color: '#4a4a4a', fontSize: '0.9rem' }}>Original photograph with natural lighting and authentic expression.</p>
+                  <p style={{ marginTop: '0.5rem', color: '#4a4a4a', fontSize: '0.85rem' }}>Original photograph with natural lighting and authentic expression.</p>
                 </div>
                 
                 <div>
@@ -516,19 +569,19 @@ const HomePage = ({ name, role, studentInfo }) => {
                   >
                     <img src={portraitGraphicImg} alt="Illustrated Portrait" style={{ width: '100%', height: '250px', objectFit: 'cover', display: 'block' }} />
                     <div className="overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.3s ease' }}>
-                      <button onClick={() => openLightbox(portraitGraphicImg, 'Digital Portrait Illustration')} style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.5rem 1.5rem', borderRadius: '2rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.4)'; e.target.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.transform = 'scale(1)'; }}>View Full Image</button>
+                      <button onClick={() => openLightbox(portraitGraphicImg, 'Digital Portrait Illustration')} style={{ backgroundColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.5rem 1.5rem', borderRadius: '2rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500, transition: 'all 0.2s' }}>View Full Image</button>
                     </div>
                   </div>
-                  <p style={{ marginTop: '0.5rem', color: '#4a4a4a', fontSize: '0.9rem' }}>Digital illustration with advanced Photoshop techniques and stylization.</p>
+                  <p style={{ marginTop: '0.5rem', color: '#4a4a4a', fontSize: '0.85rem' }}>Digital illustration with advanced Photoshop techniques and stylization.</p>
                 </div>
               </div>
             </div>
 
             {/* Digital Works Grid */}
-            <div style={{
+            <div className="digital-works-grid" style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
-              gap: '2rem'
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(380px, 1fr))',
+              gap: '1.5rem'
             }}>
               {digitalWorks.map((work, index) => (
                 <motion.div
@@ -547,28 +600,24 @@ const HomePage = ({ name, role, studentInfo }) => {
                   }}
                 >
                   <div
-                    style={{ position: 'relative', height: '220px', overflow: 'hidden', backgroundColor: '#f5f3f0', cursor: 'pointer' }}
+                    style={{ position: 'relative', height: '200px', overflow: 'hidden', backgroundColor: '#f5f3f0', cursor: 'pointer' }}
                     onMouseEnter={(e) => { const overlay = e.currentTarget.querySelector('.image-overlay'); if (overlay) overlay.style.opacity = '1'; }}
                     onMouseLeave={(e) => { const overlay = e.currentTarget.querySelector('.image-overlay'); if (overlay) overlay.style.opacity = '0'; }}
                   >
-                    <img src={work.image} alt={work.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} />
+                    <img src={work.image} alt={work.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }} />
                     <div className="image-overlay" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity 0.3s ease' }}>
-                      <button onClick={() => openLightbox(work.image, work.title)} style={{ backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.6rem 1.8rem', borderRadius: '2rem', cursor: 'pointer', fontSize: '1rem', fontWeight: 500, transition: 'all 0.2s' }} onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'; e.target.style.transform = 'scale(1.05)'; }} onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.15)'; e.target.style.transform = 'scale(1)'; }}>View Full Image</button>
+                      <button onClick={() => openLightbox(work.image, work.title)} style={{ backgroundColor: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', padding: '0.6rem 1.5rem', borderRadius: '2rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 500 }}>View Full Image</button>
                     </div>
                   </div>
-                  <div style={{ padding: '1.5rem' }}>
-                    <div style={{ fontSize: '0.8rem', color: '#8b0000', fontWeight: 600, marginBottom: '0.5rem' }}>{work.category}</div>
-                    <h3 style={{ fontSize: '1.3rem', marginBottom: '0.75rem', color: '#1a2a4f' }}>{work.title}</h3>
-                    <p style={{ color: '#4a4a4a', marginBottom: '1rem', lineHeight: 1.6 }}>{work.description}</p>
-                    <div style={{ marginBottom: '1rem' }}>
-                      <strong style={{ color: '#1a2a4f', fontSize: '0.85rem' }}>Techniques Used:</strong>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.5rem' }}>
-                        {work.techniques.map(tech => (<span key={tech} style={{ backgroundColor: '#f5f3f0', padding: '0.25rem 0.75rem', borderRadius: '0.25rem', fontSize: '0.7rem', color: '#1a2a4f' }}>{tech}</span>))}
+                  <div style={{ padding: '1rem' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#8b0000', fontWeight: 600, marginBottom: '0.5rem' }}>{work.category}</div>
+                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.5rem', color: '#1a2a4f' }}>{work.title}</h3>
+                    <p style={{ color: '#4a4a4a', marginBottom: '0.75rem', lineHeight: 1.5, fontSize: '0.85rem' }}>{work.description.substring(0, 100)}...</p>
+                    <div style={{ marginBottom: '0.75rem' }}>
+                      <strong style={{ color: '#1a2a4f', fontSize: '0.75rem' }}>Techniques Used:</strong>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.3rem' }}>
+                        {work.techniques.slice(0, 3).map(tech => (<span key={tech} style={{ backgroundColor: '#f5f3f0', padding: '0.2rem 0.6rem', borderRadius: '0.25rem', fontSize: '0.65rem', color: '#1a2a4f' }}>{tech}</span>))}
                       </div>
-                    </div>
-                    <div style={{ backgroundColor: '#faf9f8', padding: '0.75rem', borderRadius: '0.5rem', borderLeft: `3px solid #8b0000` }}>
-                      <strong style={{ color: '#1a2a4f', fontSize: '0.85rem' }}>Design Purpose:</strong>
-                      <p style={{ color: '#4a4a4a', fontSize: '0.85rem', marginTop: '0.25rem' }}>{work.purpose}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -581,7 +630,7 @@ const HomePage = ({ name, role, studentInfo }) => {
       {/* 3D Modelling Section */}
       <section style={{
         backgroundColor: 'white',
-        padding: '5rem 0',
+        padding: isMobile ? '3rem 0' : '5rem 0',
         borderTop: '1px solid #e0ddd8',
         borderBottom: '1px solid #e0ddd8'
       }}>
@@ -594,17 +643,17 @@ const HomePage = ({ name, role, studentInfo }) => {
           >
             <div style={{
               textAlign: 'center',
-              marginBottom: '3rem'
+              marginBottom: isMobile ? '1.5rem' : '3rem'
             }}>
               <div style={{
                 display: 'inline-block',
                 backgroundColor: '#8b0000',
-                width: '60px',
+                width: '50px',
                 height: '3px',
                 marginBottom: '1rem'
               }} />
               <h2 style={{
-                fontSize: '2.5rem',
+                fontSize: isMobile ? '1.6rem' : '2.5rem',
                 fontWeight: 700,
                 color: '#1a2a4f',
                 marginBottom: '0.5rem'
@@ -613,18 +662,19 @@ const HomePage = ({ name, role, studentInfo }) => {
               </h2>
               <p style={{
                 color: '#6b7280',
-                fontSize: '1.1rem',
+                fontSize: isMobile ? '0.9rem' : '1.1rem',
                 maxWidth: '600px',
-                margin: '0 auto'
+                margin: '0 auto',
+                padding: '0 1rem'
               }}>
                 Complete 3D classroom environment created using Autodesk 3DS Max
               </p>
             </div>
 
-            <div style={{
+            <div className="modelling-grid" style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-              gap: '3rem',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
+              gap: isMobile ? '1.5rem' : '3rem',
               alignItems: 'center'
             }}>
               <div>
@@ -644,7 +694,7 @@ const HomePage = ({ name, role, studentInfo }) => {
                       alt={modellingImages[currentModellingIndex].title}
                       style={{
                         width: '100%',
-                        height: '400px',
+                        height: isMobile ? '250px' : '400px',
                         objectFit: 'cover',
                         display: 'block'
                       }}
@@ -672,36 +722,34 @@ const HomePage = ({ name, role, studentInfo }) => {
                           backdropFilter: 'blur(10px)',
                           color: 'white',
                           border: '1px solid rgba(255,255,255,0.3)',
-                          padding: '0.7rem 2rem',
+                          padding: isMobile ? '0.5rem 1.2rem' : '0.7rem 2rem',
                           borderRadius: '2rem',
                           cursor: 'pointer',
-                          fontSize: '1rem',
-                          fontWeight: 500,
-                          transition: 'all 0.2s'
+                          fontSize: isMobile ? '0.8rem' : '1rem',
+                          fontWeight: 500
                         }}
-                        onMouseEnter={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.4)'; e.target.style.transform = 'scale(1.05)'; }}
-                        onMouseLeave={(e) => { e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'; e.target.style.transform = 'scale(1)'; }}
                       >
                         View Full Image
                       </button>
                     </div>
                   </div>
                   
+                  {/* Navigation Arrows - smaller on mobile */}
                   <button
                     onClick={prevModellingImage}
                     style={{
                       position: 'absolute',
-                      left: '15px',
+                      left: '10px',
                       top: '50%',
                       transform: 'translateY(-50%)',
                       backgroundColor: 'rgba(0,0,0,0.5)',
                       color: 'white',
                       border: 'none',
                       borderRadius: '50%',
-                      width: '40px',
-                      height: '40px',
+                      width: isMobile ? '30px' : '40px',
+                      height: isMobile ? '30px' : '40px',
                       cursor: 'pointer',
-                      fontSize: '18px',
+                      fontSize: isMobile ? '14px' : '18px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -717,17 +765,17 @@ const HomePage = ({ name, role, studentInfo }) => {
                     onClick={nextModellingImage}
                     style={{
                       position: 'absolute',
-                      right: '15px',
+                      right: '10px',
                       top: '50%',
                       transform: 'translateY(-50%)',
                       backgroundColor: 'rgba(0,0,0,0.5)',
                       color: 'white',
                       border: 'none',
                       borderRadius: '50%',
-                      width: '40px',
-                      height: '40px',
+                      width: isMobile ? '30px' : '40px',
+                      height: isMobile ? '30px' : '40px',
                       cursor: 'pointer',
-                      fontSize: '18px',
+                      fontSize: isMobile ? '14px' : '18px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -741,68 +789,68 @@ const HomePage = ({ name, role, studentInfo }) => {
                   </button>
                 </div>
                 
-                <div style={{
-                  display: 'flex',
-                  gap: '0.5rem',
-                  justifyContent: 'center',
-                  marginTop: '1rem',
-                  flexWrap: 'wrap'
-                }}>
-                  {modellingImages.map((img, idx) => (
-                    <div
-                      key={idx}
-                      onClick={() => setCurrentModellingIndex(idx)}
-                      style={{
-                        width: '50px',
-                        height: '50px',
-                        borderRadius: '0.25rem',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        border: idx === currentModellingIndex ? '2px solid #8b0000' : '2px solid transparent',
-                        opacity: idx === currentModellingIndex ? 1 : 0.5,
-                        transition: 'all 0.2s'
-                      }}
-                    >
-                      <img src={img.src} alt={`Thumb ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                  ))}
-                </div>
+                {/* Thumbnails - hidden on mobile */}
+                {!isMobile && (
+                  <div style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    justifyContent: 'center',
+                    marginTop: '1rem',
+                    flexWrap: 'wrap'
+                  }}>
+                    {modellingImages.slice(0, 6).map((img, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => setCurrentModellingIndex(idx)}
+                        style={{
+                          width: '50px',
+                          height: '50px',
+                          borderRadius: '0.25rem',
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          border: idx === currentModellingIndex ? '2px solid #8b0000' : '2px solid transparent',
+                          opacity: idx === currentModellingIndex ? 1 : 0.5,
+                          transition: 'all 0.2s'
+                        }}
+                      >
+                        <img src={img.src} alt={`Thumb ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>
                 <div style={{
                   backgroundColor: '#faf9f8',
-                  padding: '2rem',
+                  padding: isMobile ? '1rem' : '2rem',
                   borderRadius: '0.5rem',
                   border: '1px solid #e0ddd8'
                 }}>
                   <h3 style={{
-                    fontSize: '1.5rem',
+                    fontSize: isMobile ? '1.2rem' : '1.5rem',
                     color: '#1a2a4f',
-                    marginBottom: '1rem',
+                    marginBottom: '0.75rem',
                     borderLeft: '3px solid #8b0000',
-                    paddingLeft: '1rem'
+                    paddingLeft: '0.75rem'
                   }}>
                     Project Overview
                   </h3>
-                  <p style={{ color: '#4a4a4a', lineHeight: 1.7, marginBottom: '1.5rem' }}>
-                    This is a complete 3D classroom environment modelled from scratch using Autodesk 3DS Max. 
-                    The project demonstrates advanced 3D modelling techniques including detailed furniture design, 
-                    realistic texturing, proper lighting setup, and camera positioning.
+                  <p style={{ color: '#4a4a4a', lineHeight: 1.6, marginBottom: '1rem', fontSize: isMobile ? '0.85rem' : '1rem' }}>
+                    A complete 3D classroom environment modelled from scratch using Autodesk 3DS Max.
                   </p>
                   
-                  <h4 style={{ fontSize: '1.1rem', color: '#1a2a4f', marginBottom: '0.75rem' }}>Techniques Used</h4>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.5rem' }}>
-                    {["Polygon Modelling", "UV Mapping", "Texture Mapping", "Lighting Setup", "Camera Animation", "Scene Composition", "3D Rendering"].map(tech => (
-                      <span key={tech} style={{ backgroundColor: '#e8e6e3', padding: '0.4rem 1rem', borderRadius: '2rem', fontSize: '0.85rem', color: '#1a2a4f' }}>{tech}</span>
+                  <h4 style={{ fontSize: isMobile ? '0.9rem' : '1.1rem', color: '#1a2a4f', marginBottom: '0.5rem' }}>Techniques Used</h4>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1rem' }}>
+                    {["Polygon Modelling", "UV Mapping", "Texture Mapping", "Lighting Setup"].map(tech => (
+                      <span key={tech} style={{ backgroundColor: '#e8e6e3', padding: '0.3rem 0.8rem', borderRadius: '2rem', fontSize: isMobile ? '0.7rem' : '0.85rem', color: '#1a2a4f' }}>{tech}</span>
                     ))}
                   </div>
                   
-                  <h4 style={{ fontSize: '1.1rem', color: '#1a2a4f', marginBottom: '0.75rem' }}>Tools Used</h4>
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    <span style={{ color: '#8b0000', fontWeight: 500 }}>Autodesk 3DS Max</span>
-                    <span style={{ color: '#8b0000', fontWeight: 500 }}>V-Ray Renderer</span>
-                    <span style={{ color: '#8b0000', fontWeight: 500 }}>Adobe Photoshop</span>
+                  <h4 style={{ fontSize: isMobile ? '0.9rem' : '1.1rem', color: '#1a2a4f', marginBottom: '0.5rem' }}>Tools Used</h4>
+                  <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                    <span style={{ color: '#8b0000', fontWeight: 500, fontSize: isMobile ? '0.8rem' : '0.9rem' }}>Autodesk 3DS Max</span>
+                    <span style={{ color: '#8b0000', fontWeight: 500, fontSize: isMobile ? '0.8rem' : '0.9rem' }}>V-Ray Renderer</span>
                   </div>
                 </div>
               </div>
@@ -811,28 +859,28 @@ const HomePage = ({ name, role, studentInfo }) => {
         </div>
       </section>
 
-      {/* Quick Navigation Cards - Equal Length */}
-      <section style={{ backgroundColor: '#1a2a4f', padding: '5rem 0' }}>
+      {/* Quick Navigation Cards */}
+      <section style={{ backgroundColor: '#1a2a4f', padding: isMobile ? '3rem 0' : '5rem 0' }}>
         <div className="container">
           <h2 style={{
-            fontSize: '2.5rem',
+            fontSize: isMobile ? '1.6rem' : '2.5rem',
             fontWeight: 700,
             textAlign: 'center',
-            marginBottom: '3rem',
+            marginBottom: isMobile ? '1.5rem' : '3rem',
             color: 'white'
           }}>
             Explore My Work
           </h2>
 
-          <div style={{
+          <div className="nav-cards-grid" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '2rem'
+            gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)',
+            gap: isMobile ? '1rem' : '2rem'
           }}>
             <Link to="/skills" style={{ textDecoration: 'none', display: 'block' }}>
               <div style={{
                 backgroundColor: 'rgba(255,255,255,0.1)',
-                padding: '2rem',
+                padding: isMobile ? '1rem' : '2rem',
                 borderRadius: '0.5rem',
                 textAlign: 'center',
                 border: '1px solid rgba(255,255,255,0.2)',
@@ -846,11 +894,11 @@ const HomePage = ({ name, role, studentInfo }) => {
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>
+                <h3 style={{ fontSize: isMobile ? '1rem' : '1.5rem', marginBottom: '0.3rem', color: 'white' }}>
                   Skills
                 </h3>
-                <p style={{ color: '#d0ceca', margin: 0 }}>
-                  Web Design, Cloud Computing, Databases, HCI, Multimedia
+                <p style={{ color: '#d0ceca', margin: 0, fontSize: isMobile ? '0.7rem' : '0.85rem' }}>
+                  Web Design, Cloud, Databases
                 </p>
               </div>
             </Link>
@@ -858,7 +906,7 @@ const HomePage = ({ name, role, studentInfo }) => {
             <Link to="/projects" style={{ textDecoration: 'none', display: 'block' }}>
               <div style={{
                 backgroundColor: 'rgba(255,255,255,0.1)',
-                padding: '2rem',
+                padding: isMobile ? '1rem' : '2rem',
                 borderRadius: '0.5rem',
                 textAlign: 'center',
                 border: '1px solid rgba(255,255,255,0.2)',
@@ -872,11 +920,11 @@ const HomePage = ({ name, role, studentInfo }) => {
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>
+                <h3 style={{ fontSize: isMobile ? '1rem' : '1.5rem', marginBottom: '0.3rem', color: 'white' }}>
                   Projects
                 </h3>
-                <p style={{ color: '#d0ceca', margin: 0 }}>
-                  E-Learning, Cloud Storage, Student Portal, Network Tools
+                <p style={{ color: '#d0ceca', margin: 0, fontSize: isMobile ? '0.7rem' : '0.85rem' }}>
+                  E-Learning, Cloud Storage
                 </p>
               </div>
             </Link>
@@ -884,7 +932,7 @@ const HomePage = ({ name, role, studentInfo }) => {
             <Link to="/about" style={{ textDecoration: 'none', display: 'block' }}>
               <div style={{
                 backgroundColor: 'rgba(255,255,255,0.1)',
-                padding: '2rem',
+                padding: isMobile ? '1rem' : '2rem',
                 borderRadius: '0.5rem',
                 textAlign: 'center',
                 border: '1px solid rgba(255,255,255,0.2)',
@@ -898,11 +946,11 @@ const HomePage = ({ name, role, studentInfo }) => {
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>
+                <h3 style={{ fontSize: isMobile ? '1rem' : '1.5rem', marginBottom: '0.3rem', color: 'white' }}>
                   About Me
                 </h3>
-                <p style={{ color: '#d0ceca', margin: 0 }}>
-                  My journey, philosophy, and design principles
+                <p style={{ color: '#d0ceca', margin: 0, fontSize: isMobile ? '0.7rem' : '0.85rem' }}>
+                  My journey & philosophy
                 </p>
               </div>
             </Link>
@@ -910,7 +958,7 @@ const HomePage = ({ name, role, studentInfo }) => {
             <Link to="/contact" style={{ textDecoration: 'none', display: 'block' }}>
               <div style={{
                 backgroundColor: 'rgba(255,255,255,0.1)',
-                padding: '2rem',
+                padding: isMobile ? '1rem' : '2rem',
                 borderRadius: '0.5rem',
                 textAlign: 'center',
                 border: '1px solid rgba(255,255,255,0.2)',
@@ -924,11 +972,11 @@ const HomePage = ({ name, role, studentInfo }) => {
               onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
               onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
               >
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>
+                <h3 style={{ fontSize: isMobile ? '1rem' : '1.5rem', marginBottom: '0.3rem', color: 'white' }}>
                   Contact
                 </h3>
-                <p style={{ color: '#d0ceca', margin: 0 }}>
-                  Get in touch for opportunities
+                <p style={{ color: '#d0ceca', margin: 0, fontSize: isMobile ? '0.7rem' : '0.85rem' }}>
+                  Get in touch
                 </p>
               </div>
             </Link>
@@ -940,9 +988,9 @@ const HomePage = ({ name, role, studentInfo }) => {
       {lightboxOpen && (
         <div onClick={closeLightbox} style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
           <div onClick={(e) => e.stopPropagation()} style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}>
-            <button onClick={closeLightbox} style={{ position: 'absolute', top: '-50px', right: '-10px', backgroundColor: 'transparent', border: 'none', color: 'white', fontSize: '35px', cursor: 'pointer', padding: '5px 10px', zIndex: 2001 }}>✕</button>
+            <button onClick={closeLightbox} style={{ position: 'absolute', top: '-40px', right: '-5px', backgroundColor: 'transparent', border: 'none', color: 'white', fontSize: '30px', cursor: 'pointer', padding: '5px 10px', zIndex: 2001 }}>✕</button>
             <img src={currentImage} alt={currentTitle} style={{ maxWidth: '100%', maxHeight: '85vh', objectFit: 'contain', borderRadius: '0.5rem' }} />
-            {currentTitle && <div style={{ marginTop: '1rem', textAlign: 'center', color: 'white', fontSize: '1.1rem', fontWeight: 500 }}>{currentTitle}</div>}
+            {currentTitle && <div style={{ marginTop: '1rem', textAlign: 'center', color: 'white', fontSize: '0.9rem', fontWeight: 500 }}>{currentTitle}</div>}
           </div>
         </div>
       )}
